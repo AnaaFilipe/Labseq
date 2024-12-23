@@ -1,20 +1,18 @@
 package ex.labseq;
 
 import io.quarkus.cache.CacheResult;
-//import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Optional;
 
 @ApplicationScoped
 public class LabseqService {
 
     @CacheResult(cacheName = "labseq-cache")
     public BigInteger getValueRecursive(int n) {
+        if (n < 0) {
+            return BigInteger.valueOf(-1);
+        }
         if (n == 0 || n == 2) {
             return BigInteger.ZERO;
         } else if (n == 1 || n == 3) {
@@ -27,6 +25,10 @@ public class LabseqService {
 
     @CacheResult(cacheName = "labseq")
     public BigInteger getValueIterative(int n) {
+        if (n < 0) {
+            return BigInteger.valueOf(-1);
+        }
+
         if (n == 0 || n == 2) {
             return BigInteger.ZERO;
         } else if (n == 1 || n == 3) {
@@ -34,13 +36,13 @@ public class LabseqService {
         }
 
         BigInteger[] results = new BigInteger[4];
-        results[0] = BigInteger.ZERO; // f(0)
-        results[1] = BigInteger.ONE; // f(1)
-        results[2] = BigInteger.ZERO; // f(2)
-        results[3] = BigInteger.ONE; // f(3)
+        results[0] = BigInteger.ZERO; // l(0) = 0
+        results[1] = BigInteger.ONE; // l(1) = 1
+        results[2] = BigInteger.ZERO; // l(2) = 0
+        results[3] = BigInteger.ONE; // l(3) = 1
 
         for (long i = 4; i <= n; i++) {
-            BigInteger nextValue = results[0].add(results[1]);
+            BigInteger nextValue = results[0].add(results[1]); // l(n-4) + l(n-3)
             results[0] = results[1];
             results[1] = results[2];
             results[2] = results[3];
